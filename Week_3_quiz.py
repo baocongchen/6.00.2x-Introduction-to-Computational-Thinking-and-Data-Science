@@ -17,7 +17,7 @@ class SimpleVirus(object):
     def reproduce(self, popDensity):
         if random.random() <= self.getMaxBirthProb() * (1 - popDensity):
             return SimpleVirus(self.getMaxBirthProb(), self.getClearProb())
-        raise NoChildException
+        
  
  
 class Patient(object):
@@ -39,10 +39,7 @@ class Patient(object):
         self.viruses = [v for v in self.viruses if not v.doesClear()]
         popDensity = len(self.viruses) / float(self.maxPop)
         for v in self.viruses[:]:
-            try:
-                self.viruses.append(v.reproduce(popDensity))
-            except NoChildException:
-                pass
+            self.viruses.append(v.reproduce(popDensity))
         return len(self.viruses)
 
 # Enter your definition for simulationWithoutDrug in this box
@@ -63,26 +60,6 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
     pylab.legend()
     pylab.show()
     
-# Enter your definition for the ResistantVirus class in this box.
-# You'll enter your code for TreatedPatient on the next page.
-class ResistantVirus(SimpleVirus):  
- 
-    def __init__(self, maxBirthProb, clearProb, resistances, mutProb):
-        SimpleVirus.__init__(self, maxBirthProb, clearProb)
-        self.mutProb = mutProb
-        self.resistances = resistances
- 
-    def isResistantTo(self, drug):
-        return self.resistances.get(drug, False)
- 
-    def reproduce(self, popDensity, activeDrugs):
-        if (all(self.isResistantTo(d) for d in activeDrugs) and
-            random.random() <= self.getMaxBirthProb() * (1 - popDensity)):
-            resistances = {k:v if random.random() > self.mutProb else not v
-                           for k, v in self.resistances.items()}
-            return ResistantVirus(self.getMaxBirthProb(), self.getClearProb(), 
-                                  resistances, self.mutProb)
-        raise NoChildException
 
 # Enter your definitions for the ResistantVirus and TreatedPatient classes in this box.
 class ResistantVirus(SimpleVirus):  
@@ -102,7 +79,7 @@ class ResistantVirus(SimpleVirus):
                            for k, v in self.resistances.items()}
             return ResistantVirus(self.getMaxBirthProb(), self.getClearProb(), 
                                   resistances, self.mutProb)
-        raise NoChildException
+   
 class TreatedPatient(Patient):
     
     def __init__(self, viruses, maxPop):
@@ -124,11 +101,9 @@ class TreatedPatient(Patient):
         self.viruses = [v for v in self.viruses if not v.doesClear()]
         popDensity = len(self.viruses) / float(self.maxPop)
         for v in self.viruses[:]:
-            try:
-                self.viruses.append(v.reproduce(popDensity,
+        
+            self.viruses.append(v.reproduce(popDensity,
                                                 self.getPrescriptions()))
-            except NoChildException:
-                pass
         return len(self.viruses)
         
 # Enter your definition for simulationWithDrug in this box
@@ -158,3 +133,5 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     pylab.ylabel("# viruses")
     pylab.legend()
     pylab.show()
+simulationWithDrug(100, 1000, 0.1, 0.05, {'guttagonol': False},
+                       0.005, numTrials=5)
