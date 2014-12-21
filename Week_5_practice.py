@@ -300,3 +300,35 @@ g.addEdge(Edge(nodes[1], nodes[4]))
 g.addEdge(Edge(nodes[2], nodes[3]))
 g.addEdge(Edge(nodes[3], nodes[5]))
 g.addEdge(Edge(nodes[4], nodes[5]))
+
+
+
+#Part 2
+
+def yieldAllCombos(items):
+    """
+        Generates all combinations of N items into two bags, whereby each 
+        item is in one or zero bags.
+
+        Yields a tuple, (bag1, bag2), where each bag is represented as a list 
+        of which item(s) are in each bag.
+    """
+    import random
+    solutions = []
+    total_items = 3**len(items)
+
+    while len(solutions)<total_items:
+        combo1 = []
+        combo2 = []
+
+        for i in items:
+            if random.random()<0.3333:
+                combo1.append(i)
+            elif random.random()<0.6666:
+                combo2.append(i)
+
+        solution = (combo1, combo2)
+
+        if not solution in solutions:
+                solutions.append(solution)
+                yield solution
